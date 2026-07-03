@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="海巡研究班助手" />
-<title>海巡研究班助手 v1.2.3</title>
+<title>海巡研究班助手 v1.2.4</title>
 <style>
 :root{--main:#0f766e;--main2:#2563eb;--bg1:#e0f2fe;--bg2:#ecfeff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--danger:#ef4444;--warn:#f59e0b}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -49,14 +49,14 @@ details{margin-top:12px}summary{list-style:none;padding:13px;border-radius:16px;
 </head>
 <body>
 <main class="app">
-<header class="header"><div><h1>海巡研究班助手</h1><p>倒數、期程、待辦、筆記</p></div><div class="version">v1.2.3</div></header>
+<header class="header"><div><h1>海巡研究班助手</h1><p>倒數、期程、待辦、筆記</p></div><div class="version">v1.2.4</div></header>
 <section class="date-card"><div class="date-label">今天</div><div class="date-main" id="todayDate">----/--/--</div><div class="date-sub" id="todayWeek">星期-</div><div class="course-info"><div class="mini"><div class="k">訓期天數</div><div class="v" id="courseDay">第 -- 天</div></div><div class="mini"><div class="k">目前週次</div><div class="v" id="courseWeek">第 -- 週</div></div></div></section>
 <section class="hero"><h2>距離結訓</h2><div class="count-grid"><div class="count-box"><div class="count-num" id="monthLeft">--</div><div class="count-label">月</div></div><div class="count-box"><div class="count-num" id="weekLeft">--</div><div class="count-label">週</div></div><div class="count-box"><div class="count-num" id="dayLeft">--</div><div class="count-label">天</div></div></div><div class="live" id="liveCount">計算中...</div><div class="progress-row"><span>訓期進度</span><span id="progressLabel">--.---%</span></div><div class="bar"><span id="progressBar"></span></div></section>
 <section class="card"><div class="section-title"><h2>最近重要期程</h2></div><div id="nextEvent"></div><details><summary id="otherSummary">其他期程</summary><div id="otherEvents"></div></details><details><summary id="historySummary">歷史期程</summary><div id="historyEvents"></div></details></section>
 <section class="card"><div class="section-title"><h2>新增重要期程</h2></div><label for="eventName">期程名稱</label><input id="eventName" placeholder="例如：期中考、期末考、專題報告日"><label for="eventDate">日期與時間（已確定時填寫）</label><input id="eventDate" type="datetime-local"><div class="hint">如果還不確定日期，可以先填下面「第幾週」。日期確定後可再修改成精準時間。</div><label for="eventWeek">第幾週（日期未定時使用）</label><input id="eventWeek" type="number" min="1" max="26" placeholder="例如：第 8 週就輸入 8"><button class="primary" onclick="addEvent()">新增期程</button></section>
 <section class="card"><div class="section-title"><h2>待辦事項</h2></div><div id="todoList"></div></section>
 <section class="card"><div class="section-title"><h2>上課筆記</h2></div><label for="courseName">課程名稱</label><input id="courseName" placeholder="例如：IMO、AI課程、海洋法"><label for="noteInput">筆記內容</label><textarea id="noteInput" placeholder="輸入今天上課重點..."></textarea><button class="primary" onclick="addNote()">新增筆記</button><div id="noteList"></div></section>
-<div class="footer">開訓：2026/06/29｜結訓：2026/12/24 17:00<br>v1.2.3：重要期程可用第幾週建立，日期確定後可再修改。</div>
+<div class="footer">開訓：2026/06/29｜結訓：2026/12/24 17:00<br>v1.2.4：已確定日期的期程可一鍵改回第幾週。</div>
 </main>
 <script>
 const COURSE_START=new Date(2026,5,29,0,0,0),COURSE_END=new Date(2026,11,24,17,0,0);
@@ -114,7 +114,13 @@ if(!tv&&(!week||week<1)){alert("請選擇日期與時間，或輸入第幾週");
 events=events.map(e=>e.id===id?{...e,name,time,week,updatedAt:Date.now()}:e).sort((a,b)=>eventSortValue(a)-eventSortValue(b));
 editingEventId=null;save(EVENT_KEY,events);renderEvents()}
 function deleteEvent(id){if(!confirm("確定刪除此期程？"))return;events=events.filter(e=>e.id!==id);save(EVENT_KEY,events);renderEvents()}
-function editEventCard(e){return `<div class="edit-card"><h3>修改重要期程</h3><label>期程名稱</label><input id="editEventName-${e.id}" value="${safe(e.name)}"><label>日期與時間（已確定時填寫）</label><input id="editEventDate-${e.id}" type="datetime-local" value="${e.time?inputDateTime(e.time):""}"><div class="hint">如果日期還不確定，可清空日期並填寫第幾週。</div><label>第幾週（日期未定時使用）</label><input id="editEventWeek-${e.id}" type="number" min="1" max="26" value="${e.week||""}" placeholder="例如：8"><div class="actions"><button class="cancel-btn" onclick="cancelEditEvent()">取消</button><button class="save-btn" onclick="saveEditEvent(${e.id})">儲存</button></div></div>`}
+function clearEventDate(id){
+  const dateInput=document.getElementById(`editEventDate-${id}`);
+  const weekInput=document.getElementById(`editEventWeek-${id}`);
+  if(dateInput)dateInput.value="";
+  if(weekInput&&!weekInput.value)weekInput.focus();
+}
+function editEventCard(e){return `<div class="edit-card"><h3>修改重要期程</h3><label>期程名稱</label><input id="editEventName-${e.id}" value="${safe(e.name)}"><label>日期與時間（已確定時填寫）</label><input id="editEventDate-${e.id}" type="datetime-local" value="${e.time?inputDateTime(e.time):""}"><button class="cancel-btn" type="button" onclick="clearEventDate(${e.id})" style="width:100%;margin-top:8px">改回日期未定／改用第幾週</button><div class="hint">要改回週次：先按上方按鈕清空日期，再填寫第幾週，最後按儲存。</div><label>第幾週（日期未定時使用）</label><input id="editEventWeek-${e.id}" type="number" min="1" max="26" value="${e.week||""}" placeholder="例如：8"><div class="actions"><button class="cancel-btn" onclick="cancelEditEvent()">取消</button><button class="save-btn" onclick="saveEditEvent(${e.id})">儲存</button></div></div>`}
 function eventCard(e,now,isHistory=false){if(editingEventId===e.id)return editEventCard(e);return `<div class="event"><div class="event-date-strong">${eventDateLabel(e)}</div><div class="event-name">${safe(e.name)}</div>${e.week&&!e.time?`<div class="week-tag">暫定第 ${e.week} 週</div>`:""}<div class="count">${isHistory?"狀態：已完成":"倒數："+eventLeftText(e,now)}</div><div class="actions"><button class="edit-btn" onclick="startEditEvent(${e.id})">修改</button><button class="danger" onclick="deleteEvent(${e.id})">刪除</button></div></div>`}
 function renderEvents(){
 const now=Date.now();
