@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="海巡研究班助手" />
-<title>海巡研究班助手 v1.2.1</title>
+<title>海巡研究班助手 v1.2.2</title>
 <style>
 :root{--main:#0f766e;--main2:#2563eb;--bg1:#e0f2fe;--bg2:#ecfeff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--danger:#ef4444;--warn:#f59e0b}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -49,14 +49,14 @@ details{margin-top:12px}summary{list-style:none;padding:13px;border-radius:16px;
 </head>
 <body>
 <main class="app">
-<header class="header"><div><h1>海巡研究班助手</h1><p>倒數、期程、待辦、筆記</p></div><div class="version">v1.2.1</div></header>
+<header class="header"><div><h1>海巡研究班助手</h1><p>倒數、期程、待辦、筆記</p></div><div class="version">v1.2.2</div></header>
 <section class="date-card"><div class="date-label">今天</div><div class="date-main" id="todayDate">----/--/--</div><div class="date-sub" id="todayWeek">星期-</div><div class="course-info"><div class="mini"><div class="k">訓期天數</div><div class="v" id="courseDay">第 -- 天</div></div><div class="mini"><div class="k">目前週次</div><div class="v" id="courseWeek">第 -- 週</div></div></div></section>
 <section class="hero"><h2>距離結訓</h2><div class="count-grid"><div class="count-box"><div class="count-num" id="monthLeft">--</div><div class="count-label">月</div></div><div class="count-box"><div class="count-num" id="weekLeft">--</div><div class="count-label">週</div></div><div class="count-box"><div class="count-num" id="dayLeft">--</div><div class="count-label">天</div></div></div><div class="live" id="liveCount">計算中...</div><div class="progress-row"><span>訓期進度</span><span id="progressLabel">--.---%</span></div><div class="bar"><span id="progressBar"></span></div></section>
 <section class="card"><div class="section-title"><h2>最近重要期程</h2></div><div id="nextEvent"></div><details><summary id="otherSummary">其他期程</summary><div id="otherEvents"></div></details><details><summary id="historySummary">歷史期程</summary><div id="historyEvents"></div></details></section>
 <section class="card"><div class="section-title"><h2>新增重要期程</h2></div><label for="eventName">期程名稱</label><input id="eventName" placeholder="例如：期中考、期末考、專題報告日"><label for="eventDate">日期與時間</label><input id="eventDate" type="datetime-local"><button class="primary" onclick="addEvent()">新增期程</button></section>
 <section class="card"><div class="section-title"><h2>待辦事項</h2></div><div id="todoList"></div></section>
 <section class="card"><div class="section-title"><h2>上課筆記</h2></div><label for="courseName">課程名稱</label><input id="courseName" placeholder="例如：IMO、AI課程、海洋法"><label for="noteInput">筆記內容</label><textarea id="noteInput" placeholder="輸入今天上課重點..."></textarea><button class="primary" onclick="addNote()">新增筆記</button><div id="noteList"></div></section>
-<div class="footer">開訓：2026/06/29｜結訓：2026/12/24 17:00<br>v1.2.1：隱藏期程建立/修改時間、強化期程日期、筆記建立時間更明顯、日期卡縮小。</div>
+<div class="footer">開訓：2026/06/29｜結訓：2026/12/24 17:00<br>v1.2.2：修正修改期程時輸入框跳掉問題。</div>
 </main>
 <script>
 const COURSE_START=new Date(2026,5,29,0,0,0),COURSE_END=new Date(2026,11,24,17,0,0);
@@ -85,7 +85,17 @@ function deleteNote(id){if(!confirm("確定刪除此筆記？"))return;notes=not
 function noteEditCard(n){return `<div class="edit-card"><h3>修改上課筆記</h3><label>課程名稱</label><input id="editNoteCourse-${n.id}" value="${safe(n.course||n.type||"未分類")}"><label>筆記內容</label><textarea id="editNoteText-${n.id}">${safe(n.text)}</textarea><div class="actions"><button class="cancel-btn" onclick="cancelEditNote()">取消</button><button class="save-btn" onclick="saveEditNote(${n.id})">儲存</button></div></div>`}
 function renderNotes(){noteList.innerHTML=notes.length?notes.map(n=>{if(editingNoteId===n.id)return noteEditCard(n);return `<div class="note"><div class="note-title">【${safe(n.course||n.type||"未分類")}】</div><div class="note-created">建立：${n.createdAt?formatDateTime(n.createdAt):formatDateTime(n.time)}</div><div style="margin-top:8px;line-height:1.6;white-space:pre-wrap">${safe(n.text)}</div><div class="actions"><button class="edit-btn" onclick="startEditNote(${n.id})">修改</button><button class="danger" onclick="deleteNote(${n.id})">刪除</button></div></div>`}).join(""):'<div class="empty">尚無筆記</div>'}
 function renderTodos(){todoList.innerHTML=todos.length?todos.map(t=>`<div class="todo"><div class="todo-title">${safe(t.text||t.title||"待辦事項")}</div><div class="meta">${t.done?"狀態：已完成":"狀態：未完成"}</div></div>`).join(""):'<div class="empty">待辦事項升級版會在 v1.3.0 完成</div>'}
-function tick(){updateDate();updateCountdown();renderEvents()}renderNotes();renderTodos();tick();setInterval(tick,1000);
+function tick(){
+  updateDate();
+  updateCountdown();
+  if(editingEventId===null){
+    renderEvents();
+  }
+}
+renderNotes();
+renderTodos();
+tick();
+setInterval(tick,1000);
 </script>
 </body>
 </html>
