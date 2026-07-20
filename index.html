@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="海巡研究班助手" />
-<title>海巡研究班助手 v1.2.5</title>
+<title>海巡研究班助手 v1.3.0</title>
 <style>
 :root{--main:#0f766e;--main2:#2563eb;--bg1:#e0f2fe;--bg2:#ecfeff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--danger:#ef4444;--warn:#f59e0b}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -38,6 +38,23 @@ button{border:none;border-radius:15px;padding:12px 14px;font-family:inherit;font
 .next .name{margin:6px 0;font-size:20px;font-weight:950;word-break:break-word}.next .left{color:#b45309;font-size:15px;font-weight:950}
 details{margin-top:12px}summary{list-style:none;padding:13px;border-radius:16px;background:#f1f5f9;color:#334155;font-weight:950;cursor:pointer}summary::-webkit-details-marker{display:none}
 .event,.note,.todo,.edit-card{margin-top:10px;padding:13px;border:1px solid var(--line);border-radius:17px;background:#f8fafc}.event{border-left:5px solid var(--main2)}
+.todo{background:white}
+.todo.high{border-left:5px solid #ef4444}
+.todo.medium{border-left:5px solid #f59e0b}
+.todo.low{border-left:5px solid #22c55e}
+.todo.done{opacity:.62;background:#f1f5f9}
+.todo.done .todo-title{text-decoration:line-through}
+.todo-top{display:flex;align-items:flex-start;gap:10px}
+.todo-check{width:24px;height:24px;margin-top:1px;accent-color:#0f766e;flex:0 0 auto}
+.todo-main{flex:1;min-width:0}
+.todo-badge{display:inline-block;margin-top:6px;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:950}
+.todo-badge.high{background:#fee2e2;color:#b91c1c}
+.todo-badge.medium{background:#fef3c7;color:#b45309}
+.todo-badge.low{background:#dcfce7;color:#15803d}
+.todo-due{margin-top:6px;font-size:13px;font-weight:900;color:#475569}
+.todo-due.today,.todo-due.overdue{color:#b91c1c}
+.todo-section-label{margin-top:14px;padding-top:4px;font-size:14px;font-weight:950;color:#334155}
+.todo-form{margin-bottom:10px}
 .edit-card{background:#ecfeff;border:1px solid #99f6e4}.edit-card h3{margin:0 0 8px;font-size:17px;color:#0f766e}
 .event-name,.note-title,.todo-title{font-size:16px;font-weight:950;word-break:break-word}
 .meta{margin-top:5px;color:var(--muted);font-size:12px;line-height:1.55}.note-created{margin-top:6px;color:#334155;font-size:14px;font-weight:900;line-height:1.5}
@@ -55,14 +72,28 @@ details{margin-top:12px}summary{list-style:none;padding:13px;border-radius:16px;
 </head>
 <body>
 <main class="app">
-<header class="header"><div><h1>海巡研究班助手</h1><p>倒數、期程、待辦、筆記</p></div><div class="version">v1.2.5</div></header>
+<header class="header"><div><h1>海巡研究班助手</h1><p>倒數、期程、待辦、筆記</p></div><div class="version">v1.3.0</div></header>
 <section class="date-card"><div class="date-label">今天</div><div class="date-main" id="todayDate">----/--/--</div><div class="date-sub" id="todayWeek">星期-</div><div class="course-info"><div class="mini"><div class="k">訓期天數</div><div class="v" id="courseDay">第 -- 天</div></div><div class="mini"><div class="k">目前週次</div><div class="v" id="courseWeek">第 -- 週</div></div></div></section>
 <section class="hero"><h2>距離結訓</h2><div class="count-grid"><div class="count-box"><div class="count-num" id="monthLeft">--</div><div class="count-label">月</div></div><div class="count-box"><div class="count-num" id="weekLeft">--</div><div class="count-label">週</div></div><div class="count-box"><div class="count-num" id="dayLeft">--</div><div class="count-label">天</div></div></div><div class="live" id="liveCount">計算中...</div><div class="progress-row"><span>訓期進度</span><span id="progressLabel">--.---%</span></div><div class="bar"><span id="progressBar"></span></div></section>
 <section class="card"><div class="section-title"><h2>最近重要期程</h2></div><div id="nextEvent"></div><details><summary id="otherSummary">其他期程</summary><div id="otherEvents"></div></details><details><summary id="historySummary">歷史期程</summary><div id="historyEvents"></div></details></section>
 <section class="card"><div class="section-title"><h2>新增重要期程</h2></div><label for="eventName">期程名稱</label><input id="eventName" placeholder="例如：期中考、期末考、專題報告日"><label for="eventDate">日期與時間（已確定時填寫）</label><input id="eventDate" type="datetime-local"><div class="hint">如果還不確定日期，可以先填下面「第幾週」。日期確定後可再修改成精準時間。</div><label for="eventWeek">第幾週（日期未定時使用）</label><input id="eventWeek" type="number" min="1" max="26" placeholder="例如：第 8 週就輸入 8"><button class="primary" onclick="addEvent()">新增期程</button></section>
-<section class="card"><div class="section-title"><h2>待辦事項</h2></div><div id="todoList"></div></section>
+<section class="card"><div class="section-title"><h2>待辦事項</h2></div>
+<div class="todo-form">
+<label for="todoInput">待辦內容</label>
+<input id="todoInput" placeholder="例如：整理刑法重點">
+<label for="todoPriority">優先等級</label>
+<select id="todoPriority" style="width:100%;border:1px solid #cbd5e1;border-radius:15px;padding:13px;background:white;font-size:16px;font-family:inherit">
+<option value="high">高</option>
+<option value="medium" selected>中</option>
+<option value="low">低</option>
+</select>
+<label for="todoDue">到期日（可不填）</label>
+<input id="todoDue" type="date">
+<button class="primary" onclick="addTodo()">新增待辦</button>
+</div>
+<div id="todoList"></div></section>
 <section class="card"><div class="section-title"><h2>上課筆記</h2></div><label for="courseName">課程名稱</label><input id="courseName" placeholder="例如：IMO、AI課程、海洋法"><label for="noteInput">筆記內容</label><textarea id="noteInput" placeholder="輸入今天上課重點..."></textarea><button class="primary" onclick="addNote()">新增筆記</button><div id="noteList"></div></section>
-<div class="footer">開訓：2026/06/29｜結訓：2026/12/24 17:00<br>v1.2.5：上課筆記依課程名稱分類收合。</div>
+<div class="footer">開訓：2026/06/29｜結訓：2026/12/24 17:00<br>v1.3.0：新增基礎待辦功能（新增、完成、優先、到期日、刪除）。</div>
 </main>
 <script>
 const COURSE_START=new Date(2026,5,29,0,0,0),COURSE_END=new Date(2026,11,24,17,0,0);
@@ -154,7 +185,81 @@ const records=items.map(n=>{if(editingNoteId===n.id)return noteEditCard(n);retur
 return `<details class="note-group" ${hasEditing?"open":""}><summary><span class="note-group-name">${safe(course)}</span><span class="note-group-count">${items.length} 筆</span></summary><div class="note-group-content">${records}</div></details>`
 }).join("")
 }
-function renderTodos(){todoList.innerHTML=todos.length?todos.map(t=>`<div class="todo"><div class="todo-title">${safe(t.text||t.title||"待辦事項")}</div><div class="meta">${t.done?"狀態：已完成":"狀態：未完成"}</div></div>`).join(""):'<div class="empty">待辦事項升級版會在 v1.3.0 完成</div>'}
+function addTodo(){
+  const text=todoInput.value.trim();
+  const priority=todoPriority.value;
+  const due=todoDue.value||null;
+  if(!text){alert("請輸入待辦內容");return}
+  todos.push({id:Date.now(),text,priority,due,done:false,createdAt:Date.now()});
+  save(TODO_KEY,todos);
+  todoInput.value="";
+  todoPriority.value="medium";
+  todoDue.value="";
+  renderTodos();
+}
+function toggleTodo(id){
+  todos=todos.map(t=>t.id===id?{...t,done:!t.done}:t);
+  save(TODO_KEY,todos);
+  renderTodos();
+}
+function deleteTodo(id){
+  if(!confirm("確定刪除此待辦？"))return;
+  todos=todos.filter(t=>t.id!==id);
+  save(TODO_KEY,todos);
+  renderTodos();
+}
+function priorityLabel(p){
+  return p==="high"?"高":p==="low"?"低":"中";
+}
+function dueLabel(due){
+  if(!due)return {text:"無期限",cls:""};
+  const today=new Date();
+  today.setHours(0,0,0,0);
+  const d=new Date(due+"T00:00:00");
+  const diff=Math.round((d-today)/86400000);
+  if(diff<0)return {text:`已逾期 ${Math.abs(diff)} 天`,cls:"overdue"};
+  if(diff===0)return {text:"今天到期",cls:"today"};
+  if(diff===1)return {text:"明天到期",cls:""};
+  return {text:`${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())}`,cls:""};
+}
+function renderTodoCard(t){
+  const p=t.priority||"medium";
+  const due=dueLabel(t.due);
+  return `<div class="todo ${p} ${t.done?"done":""}">
+    <div class="todo-top">
+      <input class="todo-check" type="checkbox" ${t.done?"checked":""} onchange="toggleTodo(${t.id})">
+      <div class="todo-main">
+        <div class="todo-title">${safe(t.text||t.title||"待辦事項")}</div>
+        <div class="todo-badge ${p}">優先：${priorityLabel(p)}</div>
+        <div class="todo-due ${due.cls}">${due.text}</div>
+      </div>
+    </div>
+    <div class="actions"><button class="danger" onclick="deleteTodo(${t.id})">刪除</button></div>
+  </div>`;
+}
+function renderTodos(){
+  if(!todos.length){
+    todoList.innerHTML='<div class="empty">尚無待辦事項</div>';
+    return;
+  }
+  const order={high:0,medium:1,low:2};
+  const active=todos.filter(t=>!t.done).sort((a,b)=>{
+    const pa=order[a.priority||"medium"],pb=order[b.priority||"medium"];
+    if(pa!==pb)return pa-pb;
+    const da=a.due||"9999-12-31",db=b.due||"9999-12-31";
+    return da.localeCompare(db);
+  });
+  const done=todos.filter(t=>t.done).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  let out="";
+  if(active.length){
+    out+=`<div class="todo-section-label">未完成（${active.length}）</div>`;
+    out+=active.map(renderTodoCard).join("");
+  }
+  if(done.length){
+    out+=`<details style="margin-top:14px"><summary>已完成（${done.length}）</summary><div>${done.map(renderTodoCard).join("")}</div></details>`;
+  }
+  todoList.innerHTML=out;
+}
 function tick(){
   updateDate();
   updateCountdown();
