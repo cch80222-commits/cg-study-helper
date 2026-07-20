@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="海巡研究班助手" />
-<title>海巡研究班助手 v1.2.4</title>
+<title>海巡研究班助手 v1.2.5</title>
 <style>
 :root{--main:#0f766e;--main2:#2563eb;--bg1:#e0f2fe;--bg2:#ecfeff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--danger:#ef4444;--warn:#f59e0b}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -41,6 +41,12 @@ details{margin-top:12px}summary{list-style:none;padding:13px;border-radius:16px;
 .edit-card{background:#ecfeff;border:1px solid #99f6e4}.edit-card h3{margin:0 0 8px;font-size:17px;color:#0f766e}
 .event-name,.note-title,.todo-title{font-size:16px;font-weight:950;word-break:break-word}
 .meta{margin-top:5px;color:var(--muted);font-size:12px;line-height:1.55}.note-created{margin-top:6px;color:#334155;font-size:14px;font-weight:900;line-height:1.5}
+.note-group{margin-top:10px;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#f8fafc}
+.note-group summary{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0;border-radius:0;background:#f1f5f9;padding:15px 14px}
+.note-group-name{font-size:17px;font-weight:950;color:#0f172a;word-break:break-word}
+.note-group-count{flex:0 0 auto;padding:5px 9px;border-radius:999px;background:#dbeafe;color:#1d4ed8;font-size:12px;font-weight:950}
+.note-group-content{padding:2px 12px 12px}
+.note-group .note{background:white}
 .count{margin-top:8px;color:#0f766e;font-size:14px;font-weight:950}.actions{display:flex;gap:8px;margin-top:10px}
 .danger,.edit-btn,.save-btn,.cancel-btn{flex:1;padding:9px;border-radius:12px;font-size:14px}.danger{background:#fee2e2;color:#b91c1c}.edit-btn{background:#dbeafe;color:#1d4ed8}.save-btn{background:#0f766e;color:white}.cancel-btn{background:#e2e8f0;color:#334155}
 .empty{padding:16px 4px;text-align:center;color:#94a3b8;font-size:14px}.hint{font-size:12px;color:#64748b;line-height:1.5;margin-top:6px}.week-tag{display:inline-block;margin-top:6px;padding:5px 9px;border-radius:999px;background:#e0f2fe;color:#0369a1;font-size:13px;font-weight:950}.footer{padding:16px;text-align:center;color:#64748b;font-size:12px;line-height:1.6}
@@ -49,14 +55,14 @@ details{margin-top:12px}summary{list-style:none;padding:13px;border-radius:16px;
 </head>
 <body>
 <main class="app">
-<header class="header"><div><h1>海巡研究班助手</h1><p>倒數、期程、待辦、筆記</p></div><div class="version">v1.2.4</div></header>
+<header class="header"><div><h1>海巡研究班助手</h1><p>倒數、期程、待辦、筆記</p></div><div class="version">v1.2.5</div></header>
 <section class="date-card"><div class="date-label">今天</div><div class="date-main" id="todayDate">----/--/--</div><div class="date-sub" id="todayWeek">星期-</div><div class="course-info"><div class="mini"><div class="k">訓期天數</div><div class="v" id="courseDay">第 -- 天</div></div><div class="mini"><div class="k">目前週次</div><div class="v" id="courseWeek">第 -- 週</div></div></div></section>
 <section class="hero"><h2>距離結訓</h2><div class="count-grid"><div class="count-box"><div class="count-num" id="monthLeft">--</div><div class="count-label">月</div></div><div class="count-box"><div class="count-num" id="weekLeft">--</div><div class="count-label">週</div></div><div class="count-box"><div class="count-num" id="dayLeft">--</div><div class="count-label">天</div></div></div><div class="live" id="liveCount">計算中...</div><div class="progress-row"><span>訓期進度</span><span id="progressLabel">--.---%</span></div><div class="bar"><span id="progressBar"></span></div></section>
 <section class="card"><div class="section-title"><h2>最近重要期程</h2></div><div id="nextEvent"></div><details><summary id="otherSummary">其他期程</summary><div id="otherEvents"></div></details><details><summary id="historySummary">歷史期程</summary><div id="historyEvents"></div></details></section>
 <section class="card"><div class="section-title"><h2>新增重要期程</h2></div><label for="eventName">期程名稱</label><input id="eventName" placeholder="例如：期中考、期末考、專題報告日"><label for="eventDate">日期與時間（已確定時填寫）</label><input id="eventDate" type="datetime-local"><div class="hint">如果還不確定日期，可以先填下面「第幾週」。日期確定後可再修改成精準時間。</div><label for="eventWeek">第幾週（日期未定時使用）</label><input id="eventWeek" type="number" min="1" max="26" placeholder="例如：第 8 週就輸入 8"><button class="primary" onclick="addEvent()">新增期程</button></section>
 <section class="card"><div class="section-title"><h2>待辦事項</h2></div><div id="todoList"></div></section>
 <section class="card"><div class="section-title"><h2>上課筆記</h2></div><label for="courseName">課程名稱</label><input id="courseName" placeholder="例如：IMO、AI課程、海洋法"><label for="noteInput">筆記內容</label><textarea id="noteInput" placeholder="輸入今天上課重點..."></textarea><button class="primary" onclick="addNote()">新增筆記</button><div id="noteList"></div></section>
-<div class="footer">開訓：2026/06/29｜結訓：2026/12/24 17:00<br>v1.2.4：已確定日期的期程可一鍵改回第幾週。</div>
+<div class="footer">開訓：2026/06/29｜結訓：2026/12/24 17:00<br>v1.2.5：上課筆記依課程名稱分類收合。</div>
 </main>
 <script>
 const COURSE_START=new Date(2026,5,29,0,0,0),COURSE_END=new Date(2026,11,24,17,0,0);
@@ -137,7 +143,17 @@ function startEditNote(id){editingNoteId=id;renderNotes()}function cancelEditNot
 function saveEditNote(id){const course=document.getElementById(`editNoteCourse-${id}`).value.trim(),text=document.getElementById(`editNoteText-${id}`).value.trim();if(!course){alert("請輸入課程名稱");return}if(!text){alert("請輸入筆記內容");return}notes=notes.map(n=>n.id===id?{...n,course,text,updatedAt:Date.now()}:n);editingNoteId=null;save(NOTE_KEY,notes);renderNotes()}
 function deleteNote(id){if(!confirm("確定刪除此筆記？"))return;notes=notes.filter(n=>n.id!==id);save(NOTE_KEY,notes);renderNotes()}
 function noteEditCard(n){return `<div class="edit-card"><h3>修改上課筆記</h3><label>課程名稱</label><input id="editNoteCourse-${n.id}" value="${safe(n.course||n.type||"未分類")}"><label>筆記內容</label><textarea id="editNoteText-${n.id}">${safe(n.text)}</textarea><div class="actions"><button class="cancel-btn" onclick="cancelEditNote()">取消</button><button class="save-btn" onclick="saveEditNote(${n.id})">儲存</button></div></div>`}
-function renderNotes(){noteList.innerHTML=notes.length?notes.map(n=>{if(editingNoteId===n.id)return noteEditCard(n);return `<div class="note"><div class="note-title">【${safe(n.course||n.type||"未分類")}】</div><div class="note-created">建立：${n.createdAt?formatDateTime(n.createdAt):formatDateTime(n.time)}</div><div style="margin-top:8px;line-height:1.6;white-space:pre-wrap">${safe(n.text)}</div><div class="actions"><button class="edit-btn" onclick="startEditNote(${n.id})">修改</button><button class="danger" onclick="deleteNote(${n.id})">刪除</button></div></div>`}).join(""):'<div class="empty">尚無筆記</div>'}
+function renderNotes(){
+if(!notes.length){noteList.innerHTML='<div class="empty">尚無筆記</div>';return}
+const groups={};
+notes.forEach(n=>{const course=(n.course||n.type||"未分類").trim()||"未分類";if(!groups[course])groups[course]=[];groups[course].push(n)});
+noteList.innerHTML=Object.entries(groups).map(([course,items])=>{
+items.sort((a,b)=>(b.createdAt||b.time||0)-(a.createdAt||a.time||0));
+const hasEditing=items.some(n=>n.id===editingNoteId);
+const records=items.map(n=>{if(editingNoteId===n.id)return noteEditCard(n);return `<div class="note"><div class="note-created">建立：${n.createdAt?formatDateTime(n.createdAt):formatDateTime(n.time)}</div><div style="margin-top:8px;line-height:1.6;white-space:pre-wrap">${safe(n.text)}</div><div class="actions"><button class="edit-btn" onclick="startEditNote(${n.id})">修改</button><button class="danger" onclick="deleteNote(${n.id})">刪除</button></div></div>`}).join("");
+return `<details class="note-group" ${hasEditing?"open":""}><summary><span class="note-group-name">${safe(course)}</span><span class="note-group-count">${items.length} 筆</span></summary><div class="note-group-content">${records}</div></details>`
+}).join("")
+}
 function renderTodos(){todoList.innerHTML=todos.length?todos.map(t=>`<div class="todo"><div class="todo-title">${safe(t.text||t.title||"待辦事項")}</div><div class="meta">${t.done?"狀態：已完成":"狀態：未完成"}</div></div>`).join(""):'<div class="empty">待辦事項升級版會在 v1.3.0 完成</div>'}
 function tick(){
   updateDate();
