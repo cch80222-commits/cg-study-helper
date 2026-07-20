@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="海巡研究班助手" />
-<title>海巡研究班助手 v1.3.2</title>
+<title>海巡研究班助手 v1.3.3</title>
 <style>
 :root{--main:#0f766e;--main2:#2563eb;--bg1:#e0f2fe;--bg2:#ecfeff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--danger:#ef4444;--warn:#f59e0b}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -73,23 +73,31 @@ details{margin-top:12px}summary{list-style:none;padding:13px;border-radius:16px;
 .weekday-option{display:flex;align-items:center;gap:5px;padding:8px 10px;border:1px solid #cbd5e1;border-radius:12px;background:white;font-weight:900}
 .weekday-option input{width:18px;height:18px;margin:0;accent-color:#0f766e}
 .todo-priority-dot{font-size:18px;line-height:1;margin-top:2px;flex:0 0 auto}
+.todo-edit-card{margin-top:10px;padding:13px;border:1px solid #94a3b8;border-radius:17px;background:#f8fafc}
+.todo-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.todo-edit-actions{display:flex;gap:8px;margin-top:10px}
+.todo-edit-actions button{flex:1}
+@media(max-width:560px){.todo-edit-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <main class="app">
-<header class="header"><div><h1>海巡研究班助手</h1><p>倒數、期程、待辦、筆記</p></div><div class="version">v1.3.2</div></header>
+<header class="header"><div><h1>海巡研究班助手</h1><p>倒數、期程、待辦、筆記</p></div><div class="version">v1.3.3</div></header>
 <section class="date-card"><div class="date-label">今天</div><div class="date-main" id="todayDate">----/--/--</div><div class="date-sub" id="todayWeek">星期-</div><div class="course-info"><div class="mini"><div class="k">訓期天數</div><div class="v" id="courseDay">第 -- 天</div></div><div class="mini"><div class="k">目前週次</div><div class="v" id="courseWeek">第 -- 週</div></div></div></section>
 <section class="hero"><h2>距離結訓</h2><div class="count-grid"><div class="count-box"><div class="count-num" id="monthLeft">--</div><div class="count-label">月</div></div><div class="count-box"><div class="count-num" id="weekLeft">--</div><div class="count-label">週</div></div><div class="count-box"><div class="count-num" id="dayLeft">--</div><div class="count-label">天</div></div></div><div class="live" id="liveCount">計算中...</div><div class="progress-row"><span>訓期進度</span><span id="progressLabel">--.---%</span></div><div class="bar"><span id="progressBar"></span></div></section>
 <section class="card"><div class="section-title"><h2>重要期程</h2></div><div class="display-first"><div id="nextEvent"></div><details><summary id="otherSummary">其他期程</summary><div id="otherEvents"></div></details><details><summary id="historySummary">歷史期程</summary><div id="historyEvents"></div></details></div><details class="add-panel"><summary>＋ 新增重要期程</summary><div class="add-panel-body"><label for="eventName">期程名稱</label><input id="eventName" placeholder="例如：期中考、期末考、專題報告日"><label for="eventDate">日期與時間（已確定時填寫）</label><input id="eventDate" type="datetime-local"><div class="hint">如果還不確定日期，可以先填下面「第幾週」。日期確定後可再修改成精準時間。</div><label for="eventWeek">第幾週（日期未定時使用）</label><input id="eventWeek" type="number" min="1" max="26" placeholder="例如：第 8 週就輸入 8"><button class="primary" onclick="addEvent()">新增期程</button></div></details></section>
-<section class="card"><div class="section-title"><h2>待辦事項</h2></div><div id="todoList" class="display-first"></div><details class="add-panel"><summary>＋ 新增待辦事項</summary><div class="add-panel-body todo-form"><label for="todoInput">待辦內容</label><input id="todoInput" placeholder="例如：整理刑法重點"><label for="todoPriority">優先等級</label><select id="todoPriority" style="width:100%;border:1px solid #cbd5e1;border-radius:15px;padding:13px;background:white;font-size:16px;font-family:inherit"><option value="high">高</option><option value="medium" selected>中</option><option value="low">低</option></select><label for="todoRepeatType">執行方式</label><select id="todoRepeatType" onchange="toggleTodoRepeatFields()" style="width:100%;border:1px solid #cbd5e1;border-radius:15px;padding:13px;background:white;font-size:16px;font-family:inherit"><option value="once" selected>單次</option><option value="weekly">每週固定</option></select><div id="todoOnceFields"><label for="todoDue">日期與時間（可不填）</label><input id="todoDue" type="datetime-local"></div><div id="todoWeeklyFields" class="repeat-options" style="display:none"><div style="font-weight:950">選擇每週執行日</div><div class="repeat-row"><label class="weekday-option"><input type="checkbox" name="todoWeekday" value="1">一</label><label class="weekday-option"><input type="checkbox" name="todoWeekday" value="2">二</label><label class="weekday-option"><input type="checkbox" name="todoWeekday" value="3">三</label><label class="weekday-option"><input type="checkbox" name="todoWeekday" value="4">四</label><label class="weekday-option"><input type="checkbox" name="todoWeekday" value="5">五</label><label class="weekday-option"><input type="checkbox" name="todoWeekday" value="6">六</label><label class="weekday-option"><input type="checkbox" name="todoWeekday" value="0">日</label></div></div><button class="primary" onclick="addTodo()">新增待辦</button></div></details></section>
+<section class="card"><div class="section-title"><h2>待辦事項</h2></div><div id="todoList" class="display-first"></div><details class="add-panel"><summary>＋ 新增待辦事項</summary><div class="add-panel-body todo-form"><label for="todoInput">待辦內容</label><input id="todoInput" placeholder="例如：整理刑法重點"><label for="todoPriority">優先等級</label><select id="todoPriority" style="width:100%;border:1px solid #cbd5e1;border-radius:15px;padding:13px;background:white;font-size:16px;font-family:inherit"><option value="high">高</option><option value="medium" selected>中</option><option value="low">低</option></select><label for="todoRepeatType">執行方式</label><select id="todoRepeatType" onchange="toggleTodoRepeatFields()" style="width:100%;border:1px solid #cbd5e1;border-radius:15px;padding:13px;background:white;font-size:16px;font-family:inherit"><option value="once" selected>單次</option><option value="weekly">每週固定</option></select><div id="todoOnceFields"><div class="todo-edit-grid">
+<div><label for="todoDate">日期（可不填）</label><input id="todoDate" type="date"></div>
+<div><label for="todoTime">時間（可不填）</label><input id="todoTime" type="time"></div>
+</div></div><div id="todoWeeklyFields" class="repeat-options" style="display:none"><div style="font-weight:950">選擇每週執行日</div><div class="repeat-row"><label class="weekday-option"><input type="checkbox" name="todoWeekday" value="1">一</label><label class="weekday-option"><input type="checkbox" name="todoWeekday" value="2">二</label><label class="weekday-option"><input type="checkbox" name="todoWeekday" value="3">三</label><label class="weekday-option"><input type="checkbox" name="todoWeekday" value="4">四</label><label class="weekday-option"><input type="checkbox" name="todoWeekday" value="5">五</label><label class="weekday-option"><input type="checkbox" name="todoWeekday" value="6">六</label><label class="weekday-option"><input type="checkbox" name="todoWeekday" value="0">日</label></div></div><button class="primary" onclick="addTodo()">新增待辦</button></div></details></section>
 <section class="card"><div class="section-title"><h2>上課筆記</h2></div><div id="noteList" class="display-first"></div><details class="add-panel"><summary>＋ 新增上課筆記</summary><div class="add-panel-body"><label for="courseName">課程名稱</label><input id="courseName" placeholder="例如：IMO、AI課程、海洋法"><label for="noteInput">筆記內容</label><textarea id="noteInput" placeholder="輸入今天上課重點..."></textarea><button class="primary" onclick="addNote()">新增筆記</button></div></details></section>
-<div class="footer">開訓：2026/06/29｜結訓：2026/12/24 17:00<br>v1.3.2：待辦新增每週固定日；精簡到期文字與優先標示。</div>
+<div class="footer">開訓：2026/06/29｜結訓：2026/12/24 17:00<br>v1.3.3：待辦新增修改功能，單次待辦改為日期與時間分開輸入。</div>
 </main>
 <script>
 const COURSE_START=new Date(2026,5,29,0,0,0),COURSE_END=new Date(2026,11,24,17,0,0);
 const EVENT_KEY="cg_v1_events",NOTE_KEY="cg_v1_notes",TODO_KEY="cg_v1_todos";
 let events=load(EVENT_KEY,[{id:101,name:"專題報告期程規劃",time:new Date(2026,6,10,9,0,0).getTime()},{id:102,name:"期中考（可自行修改）",time:new Date(2026,8,25,9,0,0).getTime()},{id:103,name:"期末考（可自行修改）",time:new Date(2026,11,10,9,0,0).getTime()},{id:104,name:"結訓典禮",time:new Date(2026,11,24,17,0,0).getTime()}]);
-let notes=load(NOTE_KEY,[]),todos=load(TODO_KEY,[]),editingEventId=null,editingNoteId=null;
+let notes=load(NOTE_KEY,[]),todos=load(TODO_KEY,[]),editingEventId=null,editingNoteId=null,editingTodoId=null;
 events=events.map(e=>({createdAt:e.createdAt||e.time||Date.now(),updatedAt:e.updatedAt||null,week:e.week||null,...e}));notes=notes.map(n=>({createdAt:n.createdAt||n.time||Date.now(),updatedAt:n.updatedAt||null,...n}));save(EVENT_KEY,events);save(NOTE_KEY,notes);
 function load(k,f){try{const v=JSON.parse(localStorage.getItem(k));return Array.isArray(v)?v:f}catch(e){return f}}function save(k,v){localStorage.setItem(k,JSON.stringify(v))}
 function pad(n){return String(n).padStart(2,"0")}function safe(t){const d=document.createElement("div");d.textContent=t||"";return d.innerHTML}
@@ -180,11 +188,20 @@ function toggleTodoRepeatFields(){
   document.getElementById("todoOnceFields").style.display=weekly?"none":"block";
   document.getElementById("todoWeeklyFields").style.display=weekly?"block":"none";
 }
+function combineTodoDateTime(dateValue,timeValue){
+  if(!dateValue)return null;
+  return `${dateValue}T${timeValue||"23:59"}`;
+}
+function splitTodoDateTime(due){
+  if(!due)return {date:"",time:""};
+  const parts=String(due).split("T");
+  return {date:parts[0]||"",time:(parts[1]||"").slice(0,5)};
+}
 function addTodo(){
   const text=todoInput.value.trim();
   const priority=todoPriority.value;
   const repeatType=todoRepeatType.value;
-  const due=repeatType==="once"?(todoDue.value||null):null;
+  const due=repeatType==="once"?combineTodoDateTime(todoDate.value,todoTime.value):null;
   const weekdays=repeatType==="weekly"?Array.from(document.querySelectorAll('input[name="todoWeekday"]:checked')).map(el=>Number(el.value)):[];
   if(!text){alert("請輸入待辦內容");return}
   if(repeatType==="weekly"&&!weekdays.length){alert("請至少選擇一個星期幾");return}
@@ -193,7 +210,8 @@ function addTodo(){
   todoInput.value="";
   todoPriority.value="medium";
   todoRepeatType.value="once";
-  todoDue.value="";
+  todoDate.value="";
+  todoTime.value="";
   document.querySelectorAll('input[name="todoWeekday"]').forEach(el=>el.checked=false);
   toggleTodoRepeatFields();
   renderTodos();
@@ -201,6 +219,26 @@ function addTodo(){
 function toggleTodo(id){
   todos=todos.map(t=>t.id===id?{...t,done:!t.done}:t);
   save(TODO_KEY,todos);
+  renderTodos();
+}
+function startEditTodo(id){editingTodoId=id;renderTodos()}
+function cancelEditTodo(){editingTodoId=null;renderTodos()}
+function toggleEditRepeatFields(id){
+  const repeat=document.getElementById(`editRepeat_${id}`).value;
+  document.getElementById(`editOnce_${id}`).style.display=repeat==="once"?"block":"none";
+  document.getElementById(`editWeekly_${id}`).style.display=repeat==="weekly"?"block":"none";
+}
+function saveEditedTodo(id){
+  const text=document.getElementById(`editText_${id}`).value.trim();
+  const priority=document.getElementById(`editPriority_${id}`).value;
+  const repeatType=document.getElementById(`editRepeat_${id}`).value;
+  const due=repeatType==="once"?combineTodoDateTime(document.getElementById(`editDate_${id}`).value,document.getElementById(`editTime_${id}`).value):null;
+  const weekdays=repeatType==="weekly"?Array.from(document.querySelectorAll(`input[name="editWeekday_${id}"]:checked`)).map(el=>Number(el.value)):[];
+  if(!text){alert("請輸入待辦內容");return}
+  if(repeatType==="weekly"&&!weekdays.length){alert("請至少選擇一個星期幾");return}
+  todos=todos.map(t=>t.id===id?{...t,text,priority,repeatType,due,weekdays}:t);
+  save(TODO_KEY,todos);
+  editingTodoId=null;
   renderTodos();
 }
 function deleteTodo(id){
@@ -233,6 +271,49 @@ function dueLabel(todo){
   return {text:dateText,cls:""};
 }
 function renderTodoCard(t){
+  if(editingTodoId===t.id){
+    const p=t.priority||"medium";
+    const repeat=t.repeatType||"once";
+    const parts=splitTodoDateTime(t.due);
+    const checked=d=>(t.weekdays||[]).includes(d)?"checked":"";
+    return `<div class="todo-edit-card">
+      <label for="editText_${t.id}">待辦內容</label>
+      <input id="editText_${t.id}" value="${safe(t.text||t.title||"")}">
+      <label for="editPriority_${t.id}">優先等級</label>
+      <select id="editPriority_${t.id}" style="width:100%;border:1px solid #cbd5e1;border-radius:15px;padding:13px;background:white;font-size:16px;font-family:inherit">
+        <option value="high" ${p==="high"?"selected":""}>高</option>
+        <option value="medium" ${p==="medium"?"selected":""}>中</option>
+        <option value="low" ${p==="low"?"selected":""}>低</option>
+      </select>
+      <label for="editRepeat_${t.id}">執行方式</label>
+      <select id="editRepeat_${t.id}" onchange="toggleEditRepeatFields(${t.id})" style="width:100%;border:1px solid #cbd5e1;border-radius:15px;padding:13px;background:white;font-size:16px;font-family:inherit">
+        <option value="once" ${repeat==="once"?"selected":""}>單次</option>
+        <option value="weekly" ${repeat==="weekly"?"selected":""}>每週固定</option>
+      </select>
+      <div id="editOnce_${t.id}" style="display:${repeat==="once"?"block":"none"}">
+        <div class="todo-edit-grid">
+          <div><label for="editDate_${t.id}">日期（可不填）</label><input id="editDate_${t.id}" type="date" value="${parts.date}"></div>
+          <div><label for="editTime_${t.id}">時間（可不填）</label><input id="editTime_${t.id}" type="time" value="${parts.time}"></div>
+        </div>
+      </div>
+      <div id="editWeekly_${t.id}" class="repeat-options" style="display:${repeat==="weekly"?"block":"none"}">
+        <div style="font-weight:950">選擇每週執行日</div>
+        <div class="repeat-row">
+          <label class="weekday-option"><input type="checkbox" name="editWeekday_${t.id}" value="1" ${checked(1)}>一</label>
+          <label class="weekday-option"><input type="checkbox" name="editWeekday_${t.id}" value="2" ${checked(2)}>二</label>
+          <label class="weekday-option"><input type="checkbox" name="editWeekday_${t.id}" value="3" ${checked(3)}>三</label>
+          <label class="weekday-option"><input type="checkbox" name="editWeekday_${t.id}" value="4" ${checked(4)}>四</label>
+          <label class="weekday-option"><input type="checkbox" name="editWeekday_${t.id}" value="5" ${checked(5)}>五</label>
+          <label class="weekday-option"><input type="checkbox" name="editWeekday_${t.id}" value="6" ${checked(6)}>六</label>
+          <label class="weekday-option"><input type="checkbox" name="editWeekday_${t.id}" value="0" ${checked(0)}>日</label>
+        </div>
+      </div>
+      <div class="todo-edit-actions">
+        <button class="primary" onclick="saveEditedTodo(${t.id})">儲存</button>
+        <button onclick="cancelEditTodo()">取消</button>
+      </div>
+    </div>`;
+  }
   const p=t.priority||"medium";
   const due=dueLabel(t);
   const dot=p==="high"?"🔴":p==="low"?"🟢":"🟡";
@@ -245,7 +326,10 @@ function renderTodoCard(t){
         <div class="todo-due ${due.cls}">${due.text}</div>
       </div>
     </div>
-    <div class="actions"><button class="danger" onclick="deleteTodo(${t.id})">刪除</button></div>
+    <div class="actions">
+      <button onclick="startEditTodo(${t.id})">修改</button>
+      <button class="danger" onclick="deleteTodo(${t.id})">刪除</button>
+    </div>
   </div>`;
 }
 function renderTodos(){
