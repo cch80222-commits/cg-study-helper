@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="海巡研究班助手" />
-<title>海巡研究班助手 v1.3.0</title>
+<title>海巡研究班助手 v1.3.1</title>
 <style>
 :root{--main:#0f766e;--main2:#2563eb;--bg1:#e0f2fe;--bg2:#ecfeff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--danger:#ef4444;--warn:#f59e0b}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -54,7 +54,7 @@ details{margin-top:12px}summary{list-style:none;padding:13px;border-radius:16px;
 .todo-due{margin-top:6px;font-size:13px;font-weight:900;color:#475569}
 .todo-due.today,.todo-due.overdue{color:#b91c1c}
 .todo-section-label{margin-top:14px;padding-top:4px;font-size:14px;font-weight:950;color:#334155}
-.todo-form{margin-bottom:10px}
+.todo-form{margin-top:12px}.add-panel{margin-top:14px}.add-panel summary{background:#ecfeff;color:#0f766e;border:1px solid #99f6e4}.add-panel[open] summary{border-radius:16px 16px 0 0}.add-panel-body{padding:4px 2px 2px}.display-first{margin-bottom:12px}
 .edit-card{background:#ecfeff;border:1px solid #99f6e4}.edit-card h3{margin:0 0 8px;font-size:17px;color:#0f766e}
 .event-name,.note-title,.todo-title{font-size:16px;font-weight:950;word-break:break-word}
 .meta{margin-top:5px;color:var(--muted);font-size:12px;line-height:1.55}.note-created{margin-top:6px;color:#334155;font-size:14px;font-weight:900;line-height:1.5}
@@ -72,28 +72,13 @@ details{margin-top:12px}summary{list-style:none;padding:13px;border-radius:16px;
 </head>
 <body>
 <main class="app">
-<header class="header"><div><h1>海巡研究班助手</h1><p>倒數、期程、待辦、筆記</p></div><div class="version">v1.3.0</div></header>
+<header class="header"><div><h1>海巡研究班助手</h1><p>倒數、期程、待辦、筆記</p></div><div class="version">v1.3.1</div></header>
 <section class="date-card"><div class="date-label">今天</div><div class="date-main" id="todayDate">----/--/--</div><div class="date-sub" id="todayWeek">星期-</div><div class="course-info"><div class="mini"><div class="k">訓期天數</div><div class="v" id="courseDay">第 -- 天</div></div><div class="mini"><div class="k">目前週次</div><div class="v" id="courseWeek">第 -- 週</div></div></div></section>
 <section class="hero"><h2>距離結訓</h2><div class="count-grid"><div class="count-box"><div class="count-num" id="monthLeft">--</div><div class="count-label">月</div></div><div class="count-box"><div class="count-num" id="weekLeft">--</div><div class="count-label">週</div></div><div class="count-box"><div class="count-num" id="dayLeft">--</div><div class="count-label">天</div></div></div><div class="live" id="liveCount">計算中...</div><div class="progress-row"><span>訓期進度</span><span id="progressLabel">--.---%</span></div><div class="bar"><span id="progressBar"></span></div></section>
-<section class="card"><div class="section-title"><h2>最近重要期程</h2></div><div id="nextEvent"></div><details><summary id="otherSummary">其他期程</summary><div id="otherEvents"></div></details><details><summary id="historySummary">歷史期程</summary><div id="historyEvents"></div></details></section>
-<section class="card"><div class="section-title"><h2>新增重要期程</h2></div><label for="eventName">期程名稱</label><input id="eventName" placeholder="例如：期中考、期末考、專題報告日"><label for="eventDate">日期與時間（已確定時填寫）</label><input id="eventDate" type="datetime-local"><div class="hint">如果還不確定日期，可以先填下面「第幾週」。日期確定後可再修改成精準時間。</div><label for="eventWeek">第幾週（日期未定時使用）</label><input id="eventWeek" type="number" min="1" max="26" placeholder="例如：第 8 週就輸入 8"><button class="primary" onclick="addEvent()">新增期程</button></section>
-<section class="card"><div class="section-title"><h2>待辦事項</h2></div>
-<div class="todo-form">
-<label for="todoInput">待辦內容</label>
-<input id="todoInput" placeholder="例如：整理刑法重點">
-<label for="todoPriority">優先等級</label>
-<select id="todoPriority" style="width:100%;border:1px solid #cbd5e1;border-radius:15px;padding:13px;background:white;font-size:16px;font-family:inherit">
-<option value="high">高</option>
-<option value="medium" selected>中</option>
-<option value="low">低</option>
-</select>
-<label for="todoDue">到期日（可不填）</label>
-<input id="todoDue" type="date">
-<button class="primary" onclick="addTodo()">新增待辦</button>
-</div>
-<div id="todoList"></div></section>
-<section class="card"><div class="section-title"><h2>上課筆記</h2></div><label for="courseName">課程名稱</label><input id="courseName" placeholder="例如：IMO、AI課程、海洋法"><label for="noteInput">筆記內容</label><textarea id="noteInput" placeholder="輸入今天上課重點..."></textarea><button class="primary" onclick="addNote()">新增筆記</button><div id="noteList"></div></section>
-<div class="footer">開訓：2026/06/29｜結訓：2026/12/24 17:00<br>v1.3.0：新增基礎待辦功能（新增、完成、優先、到期日、刪除）。</div>
+<section class="card"><div class="section-title"><h2>重要期程</h2></div><div class="display-first"><div id="nextEvent"></div><details><summary id="otherSummary">其他期程</summary><div id="otherEvents"></div></details><details><summary id="historySummary">歷史期程</summary><div id="historyEvents"></div></details></div><details class="add-panel"><summary>＋ 新增重要期程</summary><div class="add-panel-body"><label for="eventName">期程名稱</label><input id="eventName" placeholder="例如：期中考、期末考、專題報告日"><label for="eventDate">日期與時間（已確定時填寫）</label><input id="eventDate" type="datetime-local"><div class="hint">如果還不確定日期，可以先填下面「第幾週」。日期確定後可再修改成精準時間。</div><label for="eventWeek">第幾週（日期未定時使用）</label><input id="eventWeek" type="number" min="1" max="26" placeholder="例如：第 8 週就輸入 8"><button class="primary" onclick="addEvent()">新增期程</button></div></details></section>
+<section class="card"><div class="section-title"><h2>待辦事項</h2></div><div id="todoList" class="display-first"></div><details class="add-panel"><summary>＋ 新增待辦事項</summary><div class="add-panel-body todo-form"><label for="todoInput">待辦內容</label><input id="todoInput" placeholder="例如：整理刑法重點"><label for="todoPriority">優先等級</label><select id="todoPriority" style="width:100%;border:1px solid #cbd5e1;border-radius:15px;padding:13px;background:white;font-size:16px;font-family:inherit"><option value="high">高</option><option value="medium" selected>中</option><option value="low">低</option></select><label for="todoDue">到期日期與時間（可不填）</label><input id="todoDue" type="datetime-local"><button class="primary" onclick="addTodo()">新增待辦</button></div></details></section>
+<section class="card"><div class="section-title"><h2>上課筆記</h2></div><div id="noteList" class="display-first"></div><details class="add-panel"><summary>＋ 新增上課筆記</summary><div class="add-panel-body"><label for="courseName">課程名稱</label><input id="courseName" placeholder="例如：IMO、AI課程、海洋法"><label for="noteInput">筆記內容</label><textarea id="noteInput" placeholder="輸入今天上課重點..."></textarea><button class="primary" onclick="addNote()">新增筆記</button></div></details></section>
+<div class="footer">開訓：2026/06/29｜結訓：2026/12/24 17:00<br>v1.3.1：待辦新增時間；重要期程、待辦與筆記輸入區移至下方並改為收合。</div>
 </main>
 <script>
 const COURSE_START=new Date(2026,5,29,0,0,0),COURSE_END=new Date(2026,11,24,17,0,0);
@@ -213,14 +198,16 @@ function priorityLabel(p){
 }
 function dueLabel(due){
   if(!due)return {text:"無期限",cls:""};
-  const today=new Date();
-  today.setHours(0,0,0,0);
-  const d=new Date(due+"T00:00:00");
-  const diff=Math.round((d-today)/86400000);
-  if(diff<0)return {text:`已逾期 ${Math.abs(diff)} 天`,cls:"overdue"};
-  if(diff===0)return {text:"今天到期",cls:"today"};
-  if(diff===1)return {text:"明天到期",cls:""};
-  return {text:`${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())}`,cls:""};
+  const now=new Date(),d=new Date(due);
+  if(isNaN(d.getTime()))return {text:"日期格式錯誤",cls:"overdue"};
+  const sameDay=d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth()&&d.getDate()===now.getDate();
+  const tomorrow=new Date(now);tomorrow.setDate(now.getDate()+1);
+  const isTomorrow=d.getFullYear()===tomorrow.getFullYear()&&d.getMonth()===tomorrow.getMonth()&&d.getDate()===tomorrow.getDate();
+  const dateText=`${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  if(d<now)return {text:`已逾期｜${dateText}`,cls:"overdue"};
+  if(sameDay)return {text:`今天 ${pad(d.getHours())}:${pad(d.getMinutes())} 到期`,cls:"today"};
+  if(isTomorrow)return {text:`明天 ${pad(d.getHours())}:${pad(d.getMinutes())} 到期`,cls:""};
+  return {text:dateText,cls:""};
 }
 function renderTodoCard(t){
   const p=t.priority||"medium";
