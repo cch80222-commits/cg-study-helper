@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="海巡研究班助手" />
-<title>海巡研究班助手 v1.3.4</title>
+<title>海巡研究班助手 v1.3.5</title>
 <style>
 :root{--main:#0f766e;--main2:#2563eb;--bg1:#e0f2fe;--bg2:#ecfeff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--danger:#ef4444;--warn:#f59e0b}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -78,11 +78,13 @@ details{margin-top:12px}summary{list-style:none;padding:13px;border-radius:16px;
 .todo-edit-actions{display:flex;gap:8px;margin-top:10px}
 .todo-edit-actions button{flex:1}
 @media(max-width:560px){.todo-edit-grid{grid-template-columns:1fr}}
+.todo .actions{display:flex;justify-content:flex-end;gap:6px;margin-top:8px}
+.todo-action-btn{width:auto!important;min-width:0!important;padding:5px 10px!important;border-radius:9px!important;font-size:13px!important;line-height:1.2!important;font-weight:800!important}
 </style>
 </head>
 <body>
 <main class="app">
-<header class="header"><div><h1>海巡研究班助手</h1><p>倒數、期程、待辦、筆記</p></div><div class="version">v1.3.4</div></header>
+<header class="header"><div><h1>海巡研究班助手</h1><p>倒數、期程、待辦、筆記</p></div><div class="version">v1.3.5</div></header>
 <section class="date-card"><div class="date-label">今天</div><div class="date-main" id="todayDate">----/--/--</div><div class="date-sub" id="todayWeek">星期-</div><div class="course-info"><div class="mini"><div class="k">訓期天數</div><div class="v" id="courseDay">第 -- 天</div></div><div class="mini"><div class="k">目前週次</div><div class="v" id="courseWeek">第 -- 週</div></div></div></section>
 <section class="hero"><h2>距離結訓</h2><div class="count-grid"><div class="count-box"><div class="count-num" id="monthLeft">--</div><div class="count-label">月</div></div><div class="count-box"><div class="count-num" id="weekLeft">--</div><div class="count-label">週</div></div><div class="count-box"><div class="count-num" id="dayLeft">--</div><div class="count-label">天</div></div></div><div class="live" id="liveCount">計算中...</div><div class="progress-row"><span>訓期進度</span><span id="progressLabel">--.---%</span></div><div class="bar"><span id="progressBar"></span></div></section>
 <section class="card"><div class="section-title"><h2>重要期程</h2></div><div class="display-first"><div id="nextEvent"></div><details><summary id="otherSummary">其他期程</summary><div id="otherEvents"></div></details><details><summary id="historySummary">歷史期程</summary><div id="historyEvents"></div></details></div><details class="add-panel"><summary>＋ 新增重要期程</summary><div class="add-panel-body"><label for="eventName">期程名稱</label><input id="eventName" placeholder="例如：期中考、期末考、專題報告日"><label for="eventDate">日期與時間（已確定時填寫）</label><input id="eventDate" type="datetime-local"><div class="hint">如果還不確定日期，可以先填下面「第幾週」。日期確定後可再修改成精準時間。</div><label for="eventWeek">第幾週（日期未定時使用）</label><input id="eventWeek" type="number" min="1" max="26" placeholder="例如：第 8 週就輸入 8"><button class="primary" onclick="addEvent()">新增期程</button></div></details></section>
@@ -96,7 +98,7 @@ details{margin-top:12px}summary{list-style:none;padding:13px;border-radius:16px;
 <input id="todoWeeklyTime" type="time">
 </div><button class="primary" onclick="addTodo()">新增待辦</button></div></details></section>
 <section class="card"><div class="section-title"><h2>上課筆記</h2></div><div id="noteList" class="display-first"></div><details class="add-panel"><summary>＋ 新增上課筆記</summary><div class="add-panel-body"><label for="courseName">課程名稱</label><input id="courseName" placeholder="例如：IMO、AI課程、海洋法"><label for="noteInput">筆記內容</label><textarea id="noteInput" placeholder="輸入今天上課重點..."></textarea><button class="primary" onclick="addNote()">新增筆記</button></div></details></section>
-<div class="footer">開訓：2026/06/29｜結訓：2026/12/24 17:00<br>v1.3.4：單次待辦改回日期與時間同欄；每週固定待辦新增時間。</div>
+<div class="footer">開訓：2026/06/29｜結訓：2026/12/24 17:00<br>v1.3.5：距離結訓新增小時顯示；待辦修改與刪除按鈕縮小。</div>
 </main>
 <script>
 const COURSE_START=new Date(2026,5,29,0,0,0),COURSE_END=new Date(2026,11,24,17,0,0);
@@ -337,8 +339,8 @@ function renderTodoCard(t){
       </div>
     </div>
     <div class="actions">
-      <button onclick="startEditTodo(${t.id})">修改</button>
-      <button class="danger" onclick="deleteTodo(${t.id})">刪除</button>
+      <button class="todo-action-btn" onclick="startEditTodo(${t.id})">修改</button>
+      <button class="danger todo-action-btn" onclick="deleteTodo(${t.id})">刪除</button>
     </div>
   </div>`;
 }
